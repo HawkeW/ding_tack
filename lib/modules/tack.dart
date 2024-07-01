@@ -112,7 +112,7 @@ class TackMission extends ChangeNotifier implements AbstractTackMission {
     );
   }
 
-  get percent {
+  double get percent {
     var total = time.inSeconds;
     var left = leftTime.inSeconds;
     return startTime == null ? 0 : ((total - left )/ total) * 100;
