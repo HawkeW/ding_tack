@@ -43,6 +43,7 @@ dependencies:
   uuid: ^4.4.0
   bitsdojo_window: ^0.1.6
   flutter_markdown: ^0.7.3
+  windows_notification: ^1.2.0
 
 dev_dependencies:
   flutter_test:

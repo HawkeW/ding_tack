@@ -4,6 +4,9 @@ import 'package:get/get.dart';
 import 'package:tacktack/modules/tack.dart';
 import 'package:uuid/v4.dart';
 
+import 'package:windows_notification/notification_message.dart';
+import 'package:windows_notification/windows_notification.dart';
+
 class TackPageController extends GetxController {
   Rx<TackMission> tackMission = TackMission(
     id: "",
@@ -81,6 +84,21 @@ class TackPageController extends GetxController {
   }
 
   sendNotification() {
+    // Create an instance of Windows Notification with your application name
+    // application id must be null in packaged mode
+    final winNotifyPlugin = WindowsNotification(
+        applicationId:
+            r"");
+
+    // create new NotificationMessage instance with id, title, body, and images
+    NotificationMessage message = NotificationMessage.fromPluginTemplate(
+      "Ding Tack",
+      "Tack Tack!",
+      "时钟结束啦~去休息一下吧！",
+    );
+
+    // show notification
+    winNotifyPlugin.showNotificationPluginTemplate(message);
   }
 }
 
