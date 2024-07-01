@@ -88,7 +88,7 @@ class TackPageController extends GetxController {
     // application id must be null in packaged mode
     final winNotifyPlugin = WindowsNotification(
         applicationId:
-            r"");
+            r"com.oncew.dingtack_fxkeb4dgdm144!tacktack");
 
     // create new NotificationMessage instance with id, title, body, and images
     NotificationMessage message = NotificationMessage.fromPluginTemplate(

@@ -148,7 +148,7 @@ class TackMissionController extends TackMission {
   }
 
   addTime(Duration time) {
-    if(time.isNegative && time.inSeconds + runTime.inSeconds <= 0) {
+    if(time.isNegative && time.inSeconds + leftTime.inSeconds <= 0) {
       return;
     }
     this.time = Duration(seconds: time.inSeconds + this.time.inSeconds);
