@@ -1,8 +1,12 @@
+import 'dart:io';
+
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:fluent_ui/fluent_ui.dart' hide Page;
 import 'package:get/get.dart';
 import 'package:system_theme/system_theme.dart';
+import 'package:tacktack/pages/app_home.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'package:tacktack/pages/tack_page.dart';
@@ -33,7 +37,7 @@ void main() async {
   if (isDesktop) {
     await flutter_acrylic.Window.initialize();
     if (defaultTargetPlatform == TargetPlatform.windows) {
-      await flutter_acrylic.Window.hideWindowControls();
+      await flutter_acrylic.Window.showTitle();
     }
     await WindowManager.instance.ensureInitialized();
     windowManager.waitUntilReadyToShow().then((_) async {
@@ -41,10 +45,11 @@ void main() async {
         TitleBarStyle.hidden,
         windowButtonVisibility: false,
       );
-      await windowManager.setMinimumSize(const Size(500, 600));
+      await windowManager.setMinimumSize(const Size(300, 600));
       await windowManager.show();
       await windowManager.setPreventClose(true);
       await windowManager.setSkipTaskbar(false);
+
     });
   }
   runApp(const MyApp());
@@ -72,9 +77,11 @@ class MyApp extends StatelessWidget {
                 ),
               ),
               child: GetMaterialApp(
+                color: Colors.white,
                 initialRoute: '/home',
                 getPages: [
-                  GetPage(name: '/home', page: () => TackPage()),
+                  GetPage(name: '/home', page: () => const MyAppBody()),
+                  GetPage(name: '/tack', page: () => TackPage()),
                 ],
               )
           );
