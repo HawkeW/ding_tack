@@ -13,7 +13,7 @@ abstract class AbstractTackMission {
   abstract Duration time;
 
   /// 剩余时间
-  abstract Duration leftTime;
+  abstract Duration runTime;
 
   /// 开始时间
   abstract DateTime? startTime;
@@ -39,7 +39,7 @@ class TackMission extends ChangeNotifier implements AbstractTackMission {
   String id;
 
   @override
-  Duration leftTime;
+  Duration runTime;
 
   @override
   bool online;
@@ -58,18 +58,18 @@ class TackMission extends ChangeNotifier implements AbstractTackMission {
       'description': description,
       'endTime': endTime,
       'id': id,
-      'leftTime': leftTime,
+      'runTime': runTime.inSeconds,
       'online': online,
       'pauseTime': pauseTime,
       'startTime': startTime,
-      'time': time,
+      'time': time.inSeconds,
     };
   }
 
   TackMission({
     required this.id,
     required this.time,
-    required this.leftTime,
+    required this.runTime,
     required this.online,
     this.description,
     this.endTime,
@@ -82,11 +82,11 @@ class TackMission extends ChangeNotifier implements AbstractTackMission {
       description: map['description'] as String,
       endTime: DateTime.parse(map['endTime'] as String),
       id: map['id'] as String,
-      leftTime: Duration(seconds: map['leftTime'] as int),
+      runTime: Duration(seconds: map['runTime'] as int),
       online: map['online'] as bool,
       pauseTime: DateTime.parse(map['pauseTime'] as String),
       startTime: DateTime.parse(map['startTime'] as String),
-      time: map['time'] as Duration,
+      time: Duration(seconds: map['time'] as int),
     );
   }
 
@@ -94,7 +94,7 @@ class TackMission extends ChangeNotifier implements AbstractTackMission {
     String? description,
     DateTime? endTime,
     String? id,
-    Duration? leftTime,
+    Duration? runTime,
     bool? online,
     DateTime? pauseTime,
     DateTime? startTime,
@@ -104,7 +104,7 @@ class TackMission extends ChangeNotifier implements AbstractTackMission {
       description: description ?? this.description,
       endTime: endTime ?? this.endTime,
       id: id ?? this.id,
-      leftTime: leftTime ?? this.leftTime,
+      runTime: runTime ?? this.runTime,
       online: online ?? this.online,
       pauseTime: pauseTime ?? this.pauseTime,
       startTime: startTime ?? this.startTime,
@@ -114,13 +114,31 @@ class TackMission extends ChangeNotifier implements AbstractTackMission {
 
   double get percent {
     var total = time.inSeconds;
-    var left = leftTime.inSeconds;
-    return startTime == null ? 0 : ((total - left )/ total) * 100;
+    var ran = runTime.inSeconds;
+    return startTime == null ? 0 : (ran / total) * 100;
+  }
+
+  bool get isRunning {
+    return startTime != null && leftTime.inSeconds > 0;
+  }
+
+  bool get isPausing {
+    return pauseTime != null;
+  }
+
+  bool get isCompleted {
+    return leftTime.inSeconds == 0;
+  }
+
+  Duration get leftTime {
+    var total = time.inSeconds;
+    var ran = runTime.inSeconds;
+    return Duration(seconds: total - ran);
   }
 }
 
 class TackMissionController extends TackMission {
-  TackMissionController({required super.id, required super.time, required super.leftTime, required super.online});
+  TackMissionController({required super.id, required super.time, required super.runTime, required super.online});
 
   pauseTo() {
     pauseTime = DateTime.now();
@@ -129,8 +147,11 @@ class TackMissionController extends TackMission {
     notifyListeners();
   }
 
-  setTime(Duration time) {
-    this.time = time;
+  addTime(Duration time) {
+    if(time.isNegative && time.inSeconds + runTime.inSeconds <= 0) {
+      return;
+    }
+    this.time = Duration(seconds: time.inSeconds + this.time.inSeconds);
     notifyListeners();
   }
 
@@ -146,7 +167,7 @@ class TackMissionController extends TackMission {
           _timer = null;
           return;
         }
-        leftTime = Duration(seconds: seconds - 1);
+        runTime = Duration(seconds: runTime.inSeconds + 1);
         notifyListeners();
       }
     });
@@ -160,7 +181,6 @@ class TackMissionController extends TackMission {
   }
 
   stopTo() {
-    leftTime = Duration.zero;
     _timer = null;
     notifyListeners();
   }
