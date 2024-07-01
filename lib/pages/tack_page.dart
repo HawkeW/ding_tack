@@ -128,8 +128,8 @@ class TackPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(icon: Icon(Icons.keyboard_arrow_down, ), onPressed: controller.subMinutes),
-                        IconButton(icon: Icon(Icons.keyboard_arrow_up), onPressed: controller.addMinutes),
+                        IconButton(icon: Icon(Icons.keyboard_arrow_down, ), onPressed: controller.isShowEditor.isTrue? controller.subMinutes : null),
+                        IconButton(icon: Icon(Icons.keyboard_arrow_up), onPressed: controller.isShowEditor.isTrue? controller.addMinutes : null),
                       ],
                     ),
                   ),)))
